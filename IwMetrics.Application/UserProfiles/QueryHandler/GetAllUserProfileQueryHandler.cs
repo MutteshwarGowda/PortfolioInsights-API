@@ -1,6 +1,6 @@
 ﻿using IwMetrics.Application.Models;
 using IwMetrics.Application.UserProfiles.Queries;
-using IwMetrics.DAL;
+using IwMetrics.Infrastructure;
 using IwMetrics.Domain.Aggregates.UserProfileAggregate;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

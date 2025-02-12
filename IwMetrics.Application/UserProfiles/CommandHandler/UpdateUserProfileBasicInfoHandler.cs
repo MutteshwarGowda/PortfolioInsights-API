@@ -1,6 +1,6 @@
 ﻿using IwMetrics.Application.Models;
 using IwMetrics.Application.UserProfiles.Command;
-using IwMetrics.DAL;
+using IwMetrics.Infrastructure;
 using IwMetrics.Domain.Aggregates.UserProfileAggregate;
 using IwMetrics.Domain.Validators.UserProfileValidator;
 using MediatR;

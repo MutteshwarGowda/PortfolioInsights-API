@@ -1,5 +1,5 @@
 ﻿
-using IwMetrics.DAL;
+using IwMetrics.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

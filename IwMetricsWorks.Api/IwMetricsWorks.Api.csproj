@@ -23,8 +23,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\IwMetrics.Application\IwMetrics.Application.csproj" />
-    <ProjectReference Include="..\IwMetrics.DAL\IwMetrics.DAL.csproj" />
     <ProjectReference Include="..\IwMetrics.Domain\IwMetrics.Domain.csproj" />
+    <ProjectReference Include="..\IwMetrics.Infrastructure\IwMetrics.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

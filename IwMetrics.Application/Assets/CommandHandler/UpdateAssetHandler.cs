@@ -2,7 +2,7 @@
 using IwMetrics.Application.Enums;
 using IwMetrics.Application.Models;
 using IwMetrics.Application.Portfolios;
-using IwMetrics.DAL;
+using IwMetrics.Infrastructure;
 using IwMetrics.Domain.Aggregates.PortfolioAssets;
 using IwMetrics.Domain.Exceptions;
 using MediatR;

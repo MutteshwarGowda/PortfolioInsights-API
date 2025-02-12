@@ -5,7 +5,7 @@ using IwMetrics.Application.Identity.Dtos;
 using IwMetrics.Application.Models;
 using IwMetrics.Application.Options;
 using IwMetrics.Application.Services;
-using IwMetrics.DAL;
+using IwMetrics.Infrastructure;
 using IwMetrics.Domain.Aggregates.UserProfileAggregate;
 using MediatR;
 using Microsoft.AspNetCore.Identity;

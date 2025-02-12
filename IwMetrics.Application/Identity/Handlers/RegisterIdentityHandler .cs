@@ -4,7 +4,7 @@ using IwMetrics.Application.Identity.Commands;
 using IwMetrics.Application.Identity.Dtos;
 using IwMetrics.Application.Models;
 using IwMetrics.Application.Services;
-using IwMetrics.DAL;
+using IwMetrics.Infrastructure;
 using IwMetrics.Domain.Aggregates.UserProfileAggregate;
 using IwMetrics.Domain.Exceptions;
 using MediatR;

@@ -1,6 +1,6 @@
 ﻿using IwMetrics.Application.Models;
 using IwMetrics.Application.Portfolios.Queries;
-using IwMetrics.DAL;
+using IwMetrics.Infrastructure;
 using IwMetrics.Domain.Aggregates.PortfolioAssets;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
