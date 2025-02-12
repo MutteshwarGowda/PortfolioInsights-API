@@ -29,14 +29,12 @@ namespace IwMetricsWorks.Api.MappingProfiles
 
             CreateMap<PortfolioCreateRequest, CreatePortfolioCommand>()
              .ForMember(dest => dest.RiskLevel, opt => opt.MapFrom(src => MapRiskLevel(src.RiskLevel)))
-             .ForMember(dest => dest.ManagerId, opt => opt.MapFrom(src => src.ManagerId))
              .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
-                
+
             CreateMap<PortfolioUpdateRequest, UpdatePortfolioCommand>()
             .ForMember(dest => dest.PortfolioId, opt => opt.MapFrom(src => src.PortfolioId))
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name)) // Map Name
-            .ForMember(dest => dest.RiskLevel, opt => opt.MapFrom(src => MapRiskLevel(src.RiskLevel))) // Map RiskLevel 
-            .ForMember(dest => dest.ManagerId, opt => opt.MapFrom(src => src.ManagerId)); // Map ManagerId
+            .ForMember(dest => dest.RiskLevel, opt => opt.MapFrom(src => MapRiskLevel(src.RiskLevel)));
 
         }
 
