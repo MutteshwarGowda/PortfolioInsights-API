@@ -9,6 +9,7 @@ namespace IwMetricsWorks.Api.MappingProfiles
         {
             CreateMap<UserRegistration, RegisterIdentity>();
             CreateMap<IdentityUserProfileDto, IdentityUserProfile>();
+            CreateMap<Login, LoginCommand>();
         }
     }
 }

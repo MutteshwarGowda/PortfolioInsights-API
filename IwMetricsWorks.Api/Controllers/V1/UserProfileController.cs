@@ -1,9 +1,4 @@
 ﻿
-using IwMetrics.Application.UserProfiles.Queries;
-using IwMetricsWorks.Api.Filters;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-
 namespace IwMetricsWorks.Api.Controllers.V1
 {
     [ApiVersion("1.0")]
@@ -30,16 +25,6 @@ namespace IwMetricsWorks.Api.Controllers.V1
             return Ok(profiles);
         }
 
-        [HttpPost]
-        [ValidateModel]
-        public async Task<IActionResult> CreateUserProfile([FromBody] UserProfileCreateRequest profile)
-        {
-            var command = _mapper.Map<CreateUserCommand>(profile);
-            var response = await _mediator.Send(command);
-            var userProfile = _mapper.Map<UserProfileResponse>(response.PayLoad);
-
-            return CreatedAtAction(nameof(GetUserProfileById), new {id = userProfile.UserProfileId}, userProfile);
-        }
 
         [HttpGet]
         [Route(ApiRoutes.UserProfile.IdRoute)]

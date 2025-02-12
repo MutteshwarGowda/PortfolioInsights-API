@@ -5,6 +5,5 @@
         public Guid PortfolioId { get; init; } 
         public string? Name { get; init; } 
         public RiskLevelResponse? RiskLevel { get; init; } 
-        public Guid ManagerId { get; init; } 
     }
 }

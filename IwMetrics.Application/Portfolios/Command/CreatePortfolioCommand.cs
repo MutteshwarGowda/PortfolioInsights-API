@@ -15,6 +15,6 @@ namespace IwMetrics.Application.Portfolios.Command
         public Guid ManagerId { get; set; }
         public RiskLevel RiskLevel { get; set; }
         
-
+   
     }
 }

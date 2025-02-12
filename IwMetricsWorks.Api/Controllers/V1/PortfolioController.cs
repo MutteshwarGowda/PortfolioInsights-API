@@ -1,13 +1,4 @@
-﻿using IwMetrics.Application.Enums;
-using IwMetrics.Application.Portfolios.Command;
-using IwMetrics.Application.Portfolios.Queries;
-using IwMetrics.DAL;
-using IwMetricsWorks.Api.Contracts.Portfolio.Requests;
-using IwMetricsWorks.Api.Filters;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using System.Linq;
-
+﻿
 namespace IwMetricsWorks.Api.Controllers.V1
 {
     [ApiVersion("1.0")]
@@ -55,10 +46,13 @@ namespace IwMetricsWorks.Api.Controllers.V1
         {
             var riskLevel = _mapper.Map<RiskLevel>(portfolioCreate.RiskLevel);
 
+            //Identity Part
+            var userProfileId = HttpContext.GetUserProfileIdClaimValue();
+
             var command = new CreatePortfolioCommand
             {
                 Name = portfolioCreate.Name,
-                ManagerId = portfolioCreate.ManagerId,
+                ManagerId = userProfileId,
                 RiskLevel = riskLevel
             };
 
@@ -77,10 +71,12 @@ namespace IwMetricsWorks.Api.Controllers.V1
         {
             var riskLevel = _mapper.Map<RiskLevel>(portfolioUpdate.RiskLevel);
 
+            var userProfileId = HttpContext.GetUserProfileIdClaimValue();
+
             var command = new UpdatePortfolioCommand
             {
                 Name = portfolioUpdate.Name,
-                ManagerId = portfolioUpdate.ManagerId,
+                ManagerId = userProfileId,
                 RiskLevel = riskLevel,
                 PortfolioId = portfolioUpdate.PortfolioId
             };
@@ -97,25 +93,29 @@ namespace IwMetricsWorks.Api.Controllers.V1
         //[ValidateGuid("id")]
         public async Task<IActionResult> DeletePortfolio([FromBody] PortfolioDeleteRequest portfolioDelete)
         {
+            var userProfileId = HttpContext.GetUserProfileIdClaimValue();
+
             var command = new DeletePortfolioCommand
             {
                 PortfolioId = portfolioDelete.PortfolioId,
-                ManagerId = portfolioDelete.ManagerId
+                ManagerId = userProfileId
 
             };
 
             var result = await _mediator.Send(command);
 
-            if (result.IsError)
-            {
-                if (result.Errors.Any(e => e.Code == ErrorCode.NotFound))
-                    return NotFound(new { message = result.Errors.First().Message });
+            return result.IsError ? HandleErrorResponse(result.Errors) : NoContent();
 
-                // Return a 400 Bad Request for validation errors (e.g., Manager mismatch)
-                return BadRequest(new { errors = result.Errors.Select(e => e.Message) });
-            }
+            //if (result.IsError)
+            //{
+            //    if (result.Errors.Any(e => e.Code == ErrorCode.NotFound))
+            //        return NotFound(new { message = result.Errors.First().Message });
 
-            return NoContent(); 
+            //    // Return a 400 Bad Request for validation errors (e.g., Manager mismatch)
+            //    return BadRequest(new { errors = result.Errors.Select(e => e.Message) });
+            //}
+
+            //return NoContent(); 
 
         }
 

@@ -1,7 +1,4 @@
-﻿using IwMetrics.Application.Enums;
-using IwMetrics.Application.Models;
-using IwMetricsWorks.Api.Contracts.Common;
-
+﻿
 namespace IwMetricsWorks.Api.Controllers.V1
 {
     public class BaseController : ControllerBase
@@ -22,11 +19,11 @@ namespace IwMetricsWorks.Api.Controllers.V1
                 return NotFound(apiError);
             }
 
-            apiError.StatusCode = 500;
+            apiError.StatusCode = 400;
             apiError.Status = "Bad Request";
             apiError.Timestamp = DateTime.Now;
-            apiError.Errors.Add("Unknown Error");
-            return StatusCode(500, apiError);
+            errors.ForEach(e => apiError.Errors.Add(e.Message));
+            return StatusCode(400, apiError);
         }
     }
 }

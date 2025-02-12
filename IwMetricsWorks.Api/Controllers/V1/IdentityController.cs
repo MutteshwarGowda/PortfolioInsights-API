@@ -1,7 +1,4 @@
-﻿using IwMetrics.Application.Identity.Commands;
-using IwMetricsWorks.Api.Contracts.Identity;
-using IwMetricsWorks.Api.Filters;
-
+﻿
 namespace IwMetricsWorks.Api.Controllers.V1
 {
     [ApiVersion("1.0")]
@@ -28,6 +25,19 @@ namespace IwMetricsWorks.Api.Controllers.V1
 
             if (result.IsError) return HandleErrorResponse(result.Errors);
 
+            return Ok(_mapper.Map<IdentityUserProfile>(result.PayLoad));
+        }
+
+        [HttpPost]
+        [Route(ApiRoutes.Identity.Login)]
+        [ValidateModel]
+        public async Task<IActionResult> Login(Login login)
+        {
+            var command = _mapper.Map<LoginCommand>(login);
+            var result = await _mediator.Send(command);
+
+            if (result.IsError) return HandleErrorResponse(result.Errors);
+  
             return Ok(_mapper.Map<IdentityUserProfile>(result.PayLoad));
         }
     }

@@ -8,7 +8,6 @@ namespace IwMetricsWorks.Api.MappingProfiles
     {
         public UserProfileMappings()
         {
-            CreateMap<UserProfileCreateRequest, CreateUserCommand>();
             CreateMap<UserProfileUpdateRequest, UpdateUserProfileBasicInfo>();
             CreateMap<UserProfile, UserProfileResponse>();
             CreateMap<BasicInfo, BasicInformation>();

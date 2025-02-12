@@ -11,10 +11,6 @@ namespace IwMetricsWorks.Api.Contracts.Portfolio.Requests
         public string Name { get; init; } // Portfolio name
 
 
-        [Required(ErrorMessage = "ManagerId is Required")]
-        public Guid ManagerId { get; init; } // Portfolio Manager ID
-
-
         [Required]
         public RiskLevelResponse RiskLevel { get; init; } // Risk level of the portfolio
 

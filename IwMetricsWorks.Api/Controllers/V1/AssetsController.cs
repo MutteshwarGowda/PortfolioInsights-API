@@ -1,10 +1,4 @@
-﻿using IwMetrics.Application.Assets.Command;
-using IwMetrics.Application.Assets.Queries;
-using IwMetricsWorks.Api.Contracts.Asset.Request;
-using IwMetricsWorks.Api.Filters;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-
+﻿
 namespace IwMetricsWorks.Api.Controllers.V1
 {
     [ApiVersion("1.0")]

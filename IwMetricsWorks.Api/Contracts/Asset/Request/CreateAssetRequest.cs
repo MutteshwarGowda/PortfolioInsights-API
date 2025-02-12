@@ -20,8 +20,5 @@ namespace IwMetricsWorks.Api.Contracts.Asset.Request
         [Required]
         public string Type { get; init; }
 
-
-        
-       
     }
 }
