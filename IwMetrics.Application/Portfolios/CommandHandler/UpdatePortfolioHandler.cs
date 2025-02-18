@@ -1,18 +1,4 @@
-﻿using IwMetrics.Application.Enums;
-using IwMetrics.Application.Models;
-using IwMetrics.Application.Portfolios.Command;
-using IwMetrics.Infrastructure;
-using IwMetrics.Domain.Aggregates.PortfolioAssets;
-using IwMetrics.Domain.Aggregates.UserProfileAggregate;
-using IwMetrics.Domain.Exceptions;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace IwMetrics.Application.Portfolios.CommandHandler
 {
     public class UpdatePortfolioHandler : IRequestHandler<UpdatePortfolioCommand, OperationResult<Portfolio>>
@@ -31,7 +17,7 @@ namespace IwMetrics.Application.Portfolios.CommandHandler
             try
             {
                 var portfolio = await _ctx.Portfolios
-                    //.Include(p => p.Manager)
+                    .Include(p => p.Assets)
                     .FirstOrDefaultAsync(p => p.PortfolioId == request.PortfolioId, cancellationToken);
 
                 if (portfolio is null)
@@ -46,12 +32,6 @@ namespace IwMetrics.Application.Portfolios.CommandHandler
                 if (userProfile is null)
                 {
                     result.AddError(ErrorCode.NotFound, string.Format(PortfolioErrorMessage.ManagerNotFound, portfolio.UserProfileId));
-                    return result;
-                }
-
-                if (portfolio.UserProfileId != request.ManagerId)
-                {
-                    result.AddError(ErrorCode.ValidationError, PortfolioErrorMessage.ManagerUnmatched);
                     return result;
                 }
 

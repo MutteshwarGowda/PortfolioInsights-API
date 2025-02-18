@@ -2,8 +2,7 @@
 {
     public record PortfolioUpdateRequest
     {
-        public Guid PortfolioId { get; init; } 
         public string? Name { get; init; } 
-        public RiskLevelResponse? RiskLevel { get; init; } 
+        public string? RiskLevel { get; init; } 
     }
 }

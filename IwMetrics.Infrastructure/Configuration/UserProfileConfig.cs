@@ -20,7 +20,7 @@ namespace IwMetrics.Infrastructure.Configuration
             // BasicInfo as an owned entity (BasicInfo will be part of UserProfiles table)
             builder.OwnsOne(up => up.BasicInfo, basicInfo =>
             {
-                // No need for validation here, FluentValidation will handle it
+                
             });
         }
     }

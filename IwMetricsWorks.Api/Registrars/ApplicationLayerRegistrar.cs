@@ -1,6 +1,4 @@
 ﻿
-using IwMetrics.Application.Services;
-
 namespace IwMetricsWorks.Api.Registrars
 {
     public class ApplicationLayerRegistrar : IWebApplicationBuilderRegistrar

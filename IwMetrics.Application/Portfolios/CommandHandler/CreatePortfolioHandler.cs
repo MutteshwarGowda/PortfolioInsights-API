@@ -1,18 +1,4 @@
-﻿using IwMetrics.Application.Enums;
-using IwMetrics.Application.Models;
-using IwMetrics.Application.Portfolios.Command;
-using IwMetrics.Application.UserProfiles;
-using IwMetrics.Infrastructure;
-using IwMetrics.Domain.Aggregates.PortfolioAssets;
-using IwMetrics.Domain.Exceptions;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace IwMetrics.Application.Portfolios.CommandHandler
 {
     public class CreatePortfolioHandler : IRequestHandler<CreatePortfolioCommand, OperationResult<Portfolio>>

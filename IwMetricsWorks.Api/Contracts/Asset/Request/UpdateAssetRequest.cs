@@ -4,9 +4,6 @@ namespace IwMetricsWorks.Api.Contracts.Asset.Request
 {
     public record UpdateAssetRequest
     {
-        [Required]
-        public Guid AssetId { get; init; }    
-
        
         [MinLength(3)]
         [MaxLength(50)]
@@ -18,7 +15,7 @@ namespace IwMetricsWorks.Api.Contracts.Asset.Request
         public decimal? Value { get; init; }    
 
 
-        public string  Type { get; init; }
+        public string?  Type { get; init; }
 
         public Guid? PortfolioId { get; init; } 
 

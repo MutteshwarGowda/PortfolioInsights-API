@@ -1,33 +1,13 @@
-﻿using AutoMapper;
-using IwMetrics.Application.Enums;
-using IwMetrics.Application.Identity.Commands;
-using IwMetrics.Application.Identity.Dtos;
-using IwMetrics.Application.Models;
-using IwMetrics.Application.Options;
-using IwMetrics.Application.Services;
-using IwMetrics.Infrastructure;
-using IwMetrics.Domain.Aggregates.UserProfileAggregate;
-using MediatR;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace IwMetrics.Application.Identity.Handlers
 {
-    public class LoginCommandHandler : IRequestHandler<LoginCommand, OperationResult<IdentityUserProfileDto>>
+    public class LoginCommandHandler : IRequestHandler<LoginCommand, OperationResult<IdentityUserLoginDto>>
     {
         private readonly DataContext _ctx;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IdentityService _identityService;
         private readonly IMapper _mapper;
-        private OperationResult<IdentityUserProfileDto> _result = new();
+        private OperationResult<IdentityUserLoginDto> _result = new();
 
         public LoginCommandHandler(DataContext ctx, UserManager<IdentityUser> userManager, IdentityService identityService, IMapper mapper)
         {
@@ -37,7 +17,7 @@ namespace IwMetrics.Application.Identity.Handlers
             _mapper = mapper;
         }
 
-        public async Task<OperationResult<IdentityUserProfileDto>> Handle(LoginCommand request, CancellationToken cancellationToken)
+        public async Task<OperationResult<IdentityUserLoginDto>> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
             
             try
@@ -48,9 +28,21 @@ namespace IwMetrics.Application.Identity.Handlers
 
                 var userProfile = await _ctx.UserProfiles.FirstOrDefaultAsync(up => up.IdentityId == identityUser.Id);
 
-                _result.PayLoad = _mapper.Map<IdentityUserProfileDto>(userProfile);
-                _result.PayLoad.UserName = identityUser.UserName;
-                _result.PayLoad.Token = GetJwtString(identityUser, userProfile);
+                var claims = await _identityService.GetAllValidClaims(identityUser);
+                var role = await _userManager.GetRolesAsync(identityUser);
+
+                var jwtResponse = _identityService.GenerateJwtToken(claims);
+
+                _result.PayLoad = new IdentityUserLoginDto
+                {
+                    IdentityId = identityUser.Id,
+                    UserProfileId = userProfile?.UserProfileId,
+                    UserName = identityUser?.UserName ?? string.Empty, 
+                    Role = role.FirstOrDefault(),
+                    Token = jwtResponse.Token,
+                    TokenExpiration = jwtResponse.Expiration
+                };
+
                 return _result;
             }
             catch (Exception e)
@@ -77,19 +69,5 @@ namespace IwMetrics.Application.Identity.Handlers
             return identityUser;
         }
 
-        private string GetJwtString(IdentityUser identity, UserProfile profile)
-        {
-            var claimsIdentity = new ClaimsIdentity(new Claim[]
-            {
-                    new Claim(JwtRegisteredClaimNames.Sub, identity.Email),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim(JwtRegisteredClaimNames.Email, identity.Email),
-                    new Claim("IdentityId", identity.Id),
-                    new Claim("UserProfileId", profile.UserProfileId.ToString())
-            });
-
-            var token = _identityService.CreateSecurityToken(claimsIdentity);
-            return _identityService.WriteToken(token);
-        }
     }
 }

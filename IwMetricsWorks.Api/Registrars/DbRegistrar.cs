@@ -1,8 +1,4 @@
 ﻿
-using IwMetrics.Infrastructure;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-
 namespace IwMetricsWorks.Api.Registrars
 {
     public class DbRegistrar : IWebApplicationBuilderRegistrar
@@ -20,6 +16,7 @@ namespace IwMetricsWorks.Api.Registrars
                 options.Password.RequiredLength = 5;
                 options.Password.RequireNonAlphanumeric = false;
             })
+            .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<DataContext>();
         }
     }

@@ -1,5 +1,4 @@
-﻿using IwMetricsWorks.Api.Contracts.Asset.Request;
-
+﻿
 namespace IwMetricsWorks.Api.MappingProfiles
 {
     public class AssetMapping : Profile

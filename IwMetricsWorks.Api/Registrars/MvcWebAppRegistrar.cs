@@ -1,6 +1,4 @@
 ﻿
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
-
 namespace IwMetricsWorks.Api.Registrars
 {
     public class MvcWebAppRegistrar : IWebApplicationRegistrar

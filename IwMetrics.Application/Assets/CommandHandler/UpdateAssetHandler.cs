@@ -1,17 +1,5 @@
-﻿using IwMetrics.Application.Assets.Command;
-using IwMetrics.Application.Enums;
-using IwMetrics.Application.Models;
-using IwMetrics.Application.Portfolios;
-using IwMetrics.Infrastructure;
+﻿
 using IwMetrics.Domain.Aggregates.PortfolioAssets;
-using IwMetrics.Domain.Exceptions;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IwMetrics.Application.Assets.CommandHandler
 {
@@ -30,19 +18,11 @@ namespace IwMetrics.Application.Assets.CommandHandler
 
             try
             {
-                var asset = await _ctx.Assets.FirstOrDefaultAsync(a => a.AssetId == request.AssetId, cancellationToken);
+                var asset = await _ctx.Assets.Include(a => a.Portfolio).FirstOrDefaultAsync(a => a.AssetId == request.AssetId, cancellationToken);
 
                 if (asset is null)
                 {
                     result.AddError(ErrorCode.NotFound, string.Format(AssetErrorMessage.NotFound, request.AssetId));
-                    return result;
-                }
-
-                var portfolio = await _ctx.Portfolios.FirstOrDefaultAsync(p => p.PortfolioId == asset.PortfolioId, cancellationToken);
-
-                if (portfolio == null)
-                {
-                    result.AddError(ErrorCode.NotFound, string.Format(PortfolioErrorMessage.NotFound, request.PortfolioId));
                     return result;
                 }
 
@@ -52,21 +32,14 @@ namespace IwMetrics.Application.Assets.CommandHandler
                     return result;
                 }
 
-                //var portfolioManager = await _ctx.PortfolioManagers.FirstOrDefaultAsync(pm => pm.Id == portfolio.ManagerId, cancellationToken);
-
-                //if (portfolioManager is null)
-                //{
-                //    result.AddError(ErrorCode.NotFound, string.Format(PortfolioErrorMessage.ManagerNotFound, request.ManagerId));
-                //    return result;
-                //}
-
-                //if (portfolio.ManagerId != request.ManagerId)
-                //{
-                //    result.AddError(ErrorCode.ValidationError, ManagerErrorMessage.PortfolioManagerMismatch);
-                //    return result;
-                //}
+                var oldValue = asset.Value;
 
                 asset.UpdateAsset(request.Name, request.Value, request.Type);
+
+                if (request.Value.HasValue && request.Value != oldValue)
+                {
+                    asset.Portfolio.UpdateAssetValue(oldValue, request.Value.Value);  
+                }
 
                 await _ctx.SaveChangesAsync(cancellationToken);
 

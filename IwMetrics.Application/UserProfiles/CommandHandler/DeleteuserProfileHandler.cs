@@ -1,16 +1,4 @@
-﻿using IwMetrics.Application.Enums;
-using IwMetrics.Application.Models;
-using IwMetrics.Application.UserProfiles.Command;
-using IwMetrics.Infrastructure;
-using IwMetrics.Domain.Aggregates.UserProfileAggregate;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace IwMetrics.Application.UserProfiles.CommandHandler
 {
     internal class DeleteuserProfileHandler : IRequestHandler<DeleteUserProfileCommand, OperationResult<UserProfile>>
@@ -29,9 +17,7 @@ namespace IwMetrics.Application.UserProfiles.CommandHandler
 
             if (userProfile is null)
             {
-                result.IsError = true;
-                var error = new Error { Code = ErrorCode.NotFound, Message = $"No User Profile with Id {request.UserProfileId} found" };
-                result.Errors.Add(error);
+                result.AddError(ErrorCode.NotFound, $"No User Profile with Id {request.UserProfileId} found");
                 return result;
             }
 

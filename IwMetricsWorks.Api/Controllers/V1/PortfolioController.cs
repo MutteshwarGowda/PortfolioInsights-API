@@ -18,6 +18,7 @@ namespace IwMetricsWorks.Api.Controllers.V1
         }
 
         [HttpGet]
+        [Authorize(Policy = "RequireAnyUser")]
         public async Task<IActionResult> GetAllPortfolios()
         {
             var result = await _mediator.Send( new GetAllPortfolio());
@@ -28,9 +29,9 @@ namespace IwMetricsWorks.Api.Controllers.V1
         
         [HttpGet]
         [Route(ApiRoutes.Portfolio.IdRoute)]
-        public async Task<IActionResult> GetPortfolioById(string id)
+        [Authorize(Policy = "RequireAnyUser")]
+        public async Task<IActionResult> GetPortfolioById(Guid portfolioId)
         {
-            var portfolioId = Guid.Parse(id);
             var query = new GetPortfolioById { PortfolioId = portfolioId };
 
             var result = await _mediator.Send( query );
@@ -42,11 +43,11 @@ namespace IwMetricsWorks.Api.Controllers.V1
         [HttpPost]
         [Route(ApiRoutes.Portfolio.CreatePortfolio)]
         [ValidateModel]
+        [Authorize(Policy = "RequirePortfolioManagerUser")]
         public async Task<IActionResult> CreatePortfolio([FromBody] PortfolioCreateRequest portfolioCreate)
         {
             var riskLevel = _mapper.Map<RiskLevel>(portfolioCreate.RiskLevel);
 
-            //Identity Part
             var userProfileId = HttpContext.GetUserProfileIdClaimValue();
 
             var command = new CreatePortfolioCommand
@@ -60,15 +61,16 @@ namespace IwMetricsWorks.Api.Controllers.V1
             var mapped = _mapper.Map<PortfolioCreatedResponse>(result.PayLoad);
 
             return result.IsError ? HandleErrorResponse(result.Errors)
-                                   : CreatedAtAction(nameof(GetPortfolioById), new { id = mapped.PortfolioId }, mapped);
+                                   : CreatedAtAction(nameof(GetPortfolioById), new { portfolioId = mapped.PortfolioId }, mapped);
         }
 
         [HttpPatch]
         [Route(ApiRoutes.Portfolio.IdRoute)]
         [ValidateModel]
-        //[ValidateGuid("id")]
-        public async Task<IActionResult> UpdatePortfolio([FromBody] PortfolioUpdateRequest portfolioUpdate)
+        [Authorize(Policy = "RequirePortfolioManagerUser")]
+        public async Task<IActionResult> UpdatePortfolio(Guid portfolioId, [FromBody] PortfolioUpdateRequest portfolioUpdate)
         {
+           
             var riskLevel = _mapper.Map<RiskLevel>(portfolioUpdate.RiskLevel);
 
             var userProfileId = HttpContext.GetUserProfileIdClaimValue();
@@ -78,7 +80,7 @@ namespace IwMetricsWorks.Api.Controllers.V1
                 Name = portfolioUpdate.Name,
                 ManagerId = userProfileId,
                 RiskLevel = riskLevel,
-                PortfolioId = portfolioUpdate.PortfolioId
+                PortfolioId = portfolioId
             };
 
             var result = await _mediator.Send(command);
@@ -90,14 +92,14 @@ namespace IwMetricsWorks.Api.Controllers.V1
         
         [HttpDelete]
         [Route(ApiRoutes.Portfolio.IdRoute)]
-        //[ValidateGuid("id")]
-        public async Task<IActionResult> DeletePortfolio([FromBody] PortfolioDeleteRequest portfolioDelete)
+        [Authorize(Policy = "RequireAdminUser")]
+        public async Task<IActionResult> DeletePortfolio(Guid portfolioId)
         {
             var userProfileId = HttpContext.GetUserProfileIdClaimValue();
 
             var command = new DeletePortfolioCommand
             {
-                PortfolioId = portfolioDelete.PortfolioId,
+                PortfolioId = portfolioId,
                 ManagerId = userProfileId
 
             };
@@ -105,17 +107,6 @@ namespace IwMetricsWorks.Api.Controllers.V1
             var result = await _mediator.Send(command);
 
             return result.IsError ? HandleErrorResponse(result.Errors) : NoContent();
-
-            //if (result.IsError)
-            //{
-            //    if (result.Errors.Any(e => e.Code == ErrorCode.NotFound))
-            //        return NotFound(new { message = result.Errors.First().Message });
-
-            //    // Return a 400 Bad Request for validation errors (e.g., Manager mismatch)
-            //    return BadRequest(new { errors = result.Errors.Select(e => e.Message) });
-            //}
-
-            //return NoContent(); 
 
         }
 

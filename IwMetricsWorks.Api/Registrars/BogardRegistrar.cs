@@ -1,6 +1,4 @@
 ﻿
-using IwMetrics.Application.UserProfiles.Queries;
-
 namespace IwMetricsWorks.Api.Registrars
 {
     public class BogardRegistrar : IWebApplicationBuilderRegistrar

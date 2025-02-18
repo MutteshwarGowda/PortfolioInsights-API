@@ -1,16 +1,4 @@
-﻿using IwMetrics.Application.Enums;
-using IwMetrics.Application.Models;
-using IwMetrics.Application.Portfolios.Queries;
-using IwMetrics.Infrastructure;
-using IwMetrics.Domain.Aggregates.PortfolioAssets;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace IwMetrics.Application.Portfolios.QueryHandler
 {
     public class GetPortfolioByIdHandler : IRequestHandler<GetPortfolioById, OperationResult<Portfolio>>
@@ -26,7 +14,7 @@ namespace IwMetrics.Application.Portfolios.QueryHandler
         {
             var result = new OperationResult<Portfolio>();
 
-            var portfolio = await _ctx.Portfolios.Include(p => p.Assets).FirstOrDefaultAsync(p => p.PortfolioId == request.PortfolioId, cancellationToken);
+            var portfolio = await _ctx.Portfolios.Include(p => p.Assets).Include(p => p.UserProfile).FirstOrDefaultAsync(p => p.PortfolioId == request.PortfolioId, cancellationToken);
 
             if (portfolio is null)
             {

@@ -1,20 +1,4 @@
-﻿using IwMetrics.Application.Models;
-using IwMetrics.Application.UserProfiles.Command;
-using IwMetrics.Infrastructure;
-using IwMetrics.Domain.Aggregates.UserProfileAggregate;
-using IwMetrics.Domain.Validators.UserProfileValidator;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mail;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using IwMetrics.Application.Models;
-using IwMetrics.Application.Enums;
-
+﻿
 namespace IwMetrics.Application.UserProfiles.CommandHandler
 {
     internal class UpdateUserProfileBasicInfoHandler : IRequestHandler<UpdateUserProfileBasicInfo, OperationResult<UserProfile>>
@@ -32,14 +16,28 @@ namespace IwMetrics.Application.UserProfiles.CommandHandler
 
             try
             {
-                var userProfile = await _ctx.UserProfiles.FirstOrDefaultAsync(up => up.UserProfileId == request.UserProfileId);
+                var userProfile = await _ctx.UserProfiles.FirstOrDefaultAsync(up => up.UserProfileId == request.Id);
 
                 if (userProfile == null)
                 {
-                    result.IsError = true;
-                    var error = new Error { Code = ErrorCode.NotFound, Message = $"No User Profile with Id {request.UserProfileId} found" };
-                    result.Errors.Add(error);
+                    var identityUser = await _ctx.Users.FirstOrDefaultAsync(u => u.Id == request.Id.ToString());
+
+                    if (identityUser == null)
+                    {
+                        result.IsError = true;
+                        result.Errors.Add(new Error { Code = ErrorCode.NotFound, Message = $"User with IdentityId {request.Id} not found" });
+                        return result;
+                    }
+
+                    var profileInfo = BasicInfo.CreateBasicInfo(request.FirstName, request.LastName, request.EmailAddress, request.Phone, request.CurrentCity);
+                    var profile = UserProfile.CreateUserProfile(identityUser.Id, profileInfo);
+                    
+                    _ctx.UserProfiles.Add(profile);
+                    await _ctx.SaveChangesAsync();
+
+                    result.PayLoad = profile;
                     return result;
+                   
                 }
 
                 userProfile.UpdateBasicInfo(userProfile.BasicInfo.WithUpdatedFields(request.FirstName, request.LastName, 

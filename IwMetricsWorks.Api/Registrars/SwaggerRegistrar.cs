@@ -1,6 +1,4 @@
 ﻿
-using IwMetricsWorks.Api.Options;
-
 namespace IwMetricsWorks.Api.Registrars
 {
     public class SwaggerRegistrar : IWebApplicationBuilderRegistrar

@@ -6,7 +6,7 @@
 
         public static class UserProfile
         {
-            public const string IdRoute = "{id}";
+            public const string IdRoute = "{userProfileId}";
         }
 
         public static class Identity
@@ -17,13 +17,13 @@
 
         public static class Portfolio
         {
-            public const string IdRoute = "{id}";
+            public const string IdRoute = "{portfolioId}";
             public const string CreatePortfolio = "portfolio";
         }
 
         public static class Assets
         {
-            public const string IdRoute = "{id}";
+            public const string IdRoute = "{assetId}";
             public const string CreateAsset = "asset";
         }
     }

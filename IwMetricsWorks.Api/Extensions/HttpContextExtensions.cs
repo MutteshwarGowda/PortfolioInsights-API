@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-
+﻿
 namespace IwMetricsWorks.Api.Extensions
 {
     public static class HttpContextExtensions

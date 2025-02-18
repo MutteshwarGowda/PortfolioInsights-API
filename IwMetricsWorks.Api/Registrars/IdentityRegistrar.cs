@@ -1,7 +1,4 @@
-﻿using IwMetrics.Application.Options;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-
+﻿
 namespace IwMetricsWorks.Api.Registrars
 {
     public class IdentityRegistrar : IWebApplicationBuilderRegistrar
@@ -39,6 +36,28 @@ namespace IwMetricsWorks.Api.Registrars
                     jwt.ClaimsIssuer = jwtSettings.Issuer;
 
                 });
+
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireExternalUser", policy =>
+                    policy.RequireClaim("ExternalRole", "Client"));
+
+                options.AddPolicy("RequireInternalUser", policy =>
+                    policy.RequireClaim("InternalRole", "Admin", "PortfolioManager"));
+
+                options.AddPolicy("RequireAdminUser", policy =>
+                    policy.RequireClaim("InternalRole", "Admin"));
+
+                options.AddPolicy("RequirePortfolioManagerUser", policy =>
+                    policy.RequireClaim("InternalRole", "PortfolioManager"));
+
+                options.AddPolicy("RequireAnyUser", policy =>
+                    policy.RequireAssertion(context =>
+                        context.User.HasClaim(c => c.Type == "ExternalRole" && c.Value == "Client") ||
+                        context.User.HasClaim(c => c.Type == "InternalRole" &&
+                            (c.Value == "Admin" || c.Value == "PortfolioManager"))
+                    ));
+            });
         }
     }
 }

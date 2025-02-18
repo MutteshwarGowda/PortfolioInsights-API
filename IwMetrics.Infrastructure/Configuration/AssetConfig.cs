@@ -13,7 +13,7 @@ namespace IwMetrics.Infrastructure.Configuration
     {
         public void Configure(EntityTypeBuilder<Asset> builder)
         {
-            // Table Mapping
+            
             builder.ToTable("Assets");
 
             // Primary Key

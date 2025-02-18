@@ -62,5 +62,22 @@ namespace IwMetrics.Domain.Aggregates.PortfolioAssets
             UserProfileId = userProfile.UserProfileId;
             DateModified = DateTime.UtcNow;
         }
+
+        public void AddAsset(Asset asset)
+        {
+            _assets.Add(asset);
+            TotalValue += asset.Value;
+        }
+
+        public void UpdateAssetValue(decimal oldValue, decimal newValue)
+        {
+            TotalValue += (newValue - oldValue);
+        }
+
+        public void RemoveAsset(Asset asset)
+        {
+            _assets.Remove(asset);
+            TotalValue -= asset.Value;
+        }
     }
 }

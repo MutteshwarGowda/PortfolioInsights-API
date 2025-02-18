@@ -1,16 +1,4 @@
-﻿using IwMetrics.Application.Enums;
-using IwMetrics.Application.Models;
-using IwMetrics.Application.Portfolios.Command;
-using IwMetrics.Infrastructure;
-using IwMetrics.Domain.Aggregates.PortfolioAssets;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace IwMetrics.Application.Portfolios.CommandHandler
 {
     public class DeletePortfolioHandler : IRequestHandler<DeletePortfolioCommand, OperationResult<Portfolio>>
@@ -33,11 +21,6 @@ namespace IwMetrics.Application.Portfolios.CommandHandler
             {
                 result.AddError(ErrorCode.NotFound, string.Format(PortfolioErrorMessage.NotFound, request.PortfolioId));
                 return result;
-            }
-
-            if (portfolio.UserProfileId != request.ManagerId)
-            {
-                result.AddError(ErrorCode.ValidationError, PortfolioErrorMessage.ManagerUnmatched);
             }
 
             _ctx.Portfolios.Remove(portfolio);

@@ -1,6 +1,4 @@
-﻿using IwMetricsWorks.Api.Contracts.Common;
-using Microsoft.AspNetCore.Mvc.Filters;
-
+﻿
 namespace IwMetricsWorks.Api.Filters
 {
     public class ValidateModelAttribute : ActionFilterAttribute

@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace IwMetrics.Application.Enums
 {
     public enum ErrorCode
     {
+        BadRequest = 400,
         NotFound = 404,
         ServerError = 500,
 
@@ -16,6 +12,7 @@ namespace IwMetrics.Application.Enums
 
         //Infrastructure errors should be in range 200-299
         IdentityCreationFailed = 202,
+        OperationFailed = 203,
 
 
         //Application error should be in range 300 - 399

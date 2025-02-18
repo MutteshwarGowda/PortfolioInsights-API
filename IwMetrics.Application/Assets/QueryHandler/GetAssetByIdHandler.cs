@@ -1,16 +1,4 @@
-﻿using IwMetrics.Application.Assets.Queries;
-using IwMetrics.Application.Enums;
-using IwMetrics.Application.Models;
-using IwMetrics.Infrastructure;
-using IwMetrics.Domain.Aggregates.PortfolioAssets;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace IwMetrics.Application.Assets.QueryHandler
 {
     public class GetAssetByIdHandler : IRequestHandler<GetAssetById, OperationResult<Asset>>

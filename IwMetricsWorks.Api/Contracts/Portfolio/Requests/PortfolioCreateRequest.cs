@@ -1,7 +1,4 @@
-﻿using IwMetricsWorks.Api.Contracts.Asset.Request;
-using System.ComponentModel.DataAnnotations;
-
-namespace IwMetricsWorks.Api.Contracts.Portfolio.Requests
+﻿namespace IwMetricsWorks.Api.Contracts.Portfolio.Requests
 {
     public record PortfolioCreateRequest
     {
@@ -12,7 +9,7 @@ namespace IwMetricsWorks.Api.Contracts.Portfolio.Requests
 
 
         [Required]
-        public RiskLevelResponse RiskLevel { get; init; } // Risk level of the portfolio
+        public string RiskLevel { get; init; } 
 
     }
 }

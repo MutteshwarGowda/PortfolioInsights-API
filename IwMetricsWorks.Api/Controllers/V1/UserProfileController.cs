@@ -17,6 +17,7 @@ namespace IwMetricsWorks.Api.Controllers.V1
         }
 
         [HttpGet]
+        [Authorize(Policy = "RequireAnyUser")]
         public async Task<IActionResult> GetAllProfiles()
         {
             var query = new GetAllUserProfile();
@@ -28,26 +29,26 @@ namespace IwMetricsWorks.Api.Controllers.V1
 
         [HttpGet]
         [Route(ApiRoutes.UserProfile.IdRoute)]
-        public async Task<IActionResult> GetUserProfileById(string id)
+        [Authorize(Policy = "RequireAnyUser")]
+        public async Task<IActionResult> GetUserProfileById(Guid userProfileId)
         {
-            var query = new GetUserProfileById { UserProfileId = Guid.Parse(id) };
-            var response = await _mediator.Send(query);
+            var query = new GetUserProfileById { UserProfileId = userProfileId };
+            var result = await _mediator.Send(query);
+            var mapped = _mapper.Map<UserProfileResponse>(result.PayLoad);
 
-            if (response.IsError) 
-                return HandleErrorResponse(response.Errors);
-
-            var userProfile = _mapper.Map<UserProfileResponse>(response);
+            if (result.IsError) return HandleErrorResponse(result.Errors);
             
-            return Ok(userProfile);
+            return Ok(mapped);
         }
 
         [HttpPatch]
         [Route(ApiRoutes.UserProfile.IdRoute)]
         [ValidateModel]
-        public async Task<IActionResult> UpdateUserProfile(string id, UserProfileUpdateRequest updatedProfile)
+        [Authorize(Policy = "RequireAdminUser")]
+        public async Task<IActionResult> UpdateUserProfile(Guid userProfileId, UserProfileUpdateRequest updatedProfile)
         {
             var command = _mapper.Map<UpdateUserProfileBasicInfo>(updatedProfile);
-            command.UserProfileId = Guid.Parse(id);
+            command.Id = userProfileId;
             var response = await _mediator.Send(command);
 
             return response.IsError ? HandleErrorResponse(response.Errors) : NoContent();
@@ -55,9 +56,10 @@ namespace IwMetricsWorks.Api.Controllers.V1
 
         [HttpDelete]
         [Route(ApiRoutes.UserProfile.IdRoute)]
-        public async Task<IActionResult> DeleteUserProfile(string id)
+        [Authorize(Policy = "RequireAdminUser")]
+        public async Task<IActionResult> DeleteUserProfile(Guid userProfileId)
         {
-            var command = new DeleteUserProfileCommand() { UserProfileId = Guid.Parse(id) };
+            var command = new DeleteUserProfileCommand() { UserProfileId = userProfileId };
             var response = await _mediator.Send(command);
 
             return response.IsError ? HandleErrorResponse(response.Errors) : NoContent();

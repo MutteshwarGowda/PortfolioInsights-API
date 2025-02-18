@@ -1,44 +1,27 @@
-﻿using AutoMapper;
-using IwMetrics.Application.Enums;
-using IwMetrics.Application.Identity.Commands;
-using IwMetrics.Application.Identity.Dtos;
-using IwMetrics.Application.Models;
-using IwMetrics.Application.Services;
-using IwMetrics.Infrastructure;
-using IwMetrics.Domain.Aggregates.UserProfileAggregate;
-using IwMetrics.Domain.Exceptions;
-using MediatR;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace IwMetrics.Application.Identity.Handlers
 {
-    public class RegisterIdentityHandler : IRequestHandler<RegisterIdentity, OperationResult<IdentityUserProfileDto>>
+    public class RegisterIdentityHandler : IRequestHandler<RegisterIdentity, OperationResult<IdentityUserRegistrationDto>>
     {
         private readonly DataContext _ctx;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IdentityService _identityService;
         private readonly IMapper _mapper;
-        private OperationResult<IdentityUserProfileDto> _result = new();
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private OperationResult<IdentityUserRegistrationDto> _result = new();
+        
 
-        public RegisterIdentityHandler(DataContext ctx, UserManager<IdentityUser> userManager, IdentityService identityService, IMapper mapper)
+        public RegisterIdentityHandler(DataContext ctx, UserManager<IdentityUser> userManager, IdentityService identityService, IMapper mapper,
+                                       RoleManager<IdentityRole> roleManager)
         {
             _ctx = ctx;
             _userManager = userManager;
             _identityService = identityService;
             _mapper = mapper;
+            _roleManager = roleManager;
         }
 
-        public async Task<OperationResult<IdentityUserProfileDto>> Handle(RegisterIdentity request, CancellationToken cancellationToken)
+        public async Task<OperationResult<IdentityUserRegistrationDto>> Handle(RegisterIdentity request, CancellationToken cancellationToken)
         {
             try
             {
@@ -51,12 +34,22 @@ namespace IwMetrics.Application.Identity.Handlers
                 if (_result.IsError) return _result;
 
                 var profile = await CreateUserProfileAsync(request, transaction, identity, cancellationToken);
+
+                var roleAssignmentResult = await AssignRoleToUser(identity, "AppUser");
+                if (!roleAssignmentResult.Succeeded)
+                {
+                    await transaction.RollbackAsync(cancellationToken);
+                    _result.AddError(ErrorCode.OperationFailed, "Failed to assign role to the user.");
+                    return _result;
+                }
+
                 await transaction.CommitAsync(cancellationToken);
 
-                _result.PayLoad = _mapper.Map<IdentityUserProfileDto>(profile);
-                _result.PayLoad.UserName = identity.UserName;
+                await _identityService.AddDefaultClaim(identity, profile);
 
-                _result.PayLoad.Token = GetJwtString(identity, profile);
+                _result.PayLoad = _mapper.Map<IdentityUserRegistrationDto>(profile);
+                _result.PayLoad.UserName = identity.UserName;
+               
                 return _result;
             }
             catch (UserProfileNotValidException ex)
@@ -118,21 +111,14 @@ namespace IwMetrics.Application.Identity.Handlers
             }
         }
 
-        private string GetJwtString(IdentityUser identity, UserProfile profile)
+        private async Task<IdentityResult> AssignRoleToUser(IdentityUser user, string roleName)
         {
-            var claimsIdentity = new ClaimsIdentity(new Claim[]
-                    {
-                        new Claim(JwtRegisteredClaimNames.Sub, identity.Email),
-                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                        new Claim(JwtRegisteredClaimNames.Email, identity.Email),
-                        new Claim("IdentityId", identity.Id),
-                        new Claim("UserProfileId", profile.UserProfileId.ToString())
-                    });
+            if (!await _roleManager.RoleExistsAsync(roleName))
+            {
+                return IdentityResult.Failed(new IdentityError { Description = $"Role {roleName} does not exist." });
+            }
 
-            var token = _identityService.CreateSecurityToken(claimsIdentity);
-            return _identityService.WriteToken(token);
+            return await _userManager.AddToRoleAsync(user, roleName);
         }
-
-
     }
 }

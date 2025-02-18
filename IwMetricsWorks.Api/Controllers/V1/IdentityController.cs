@@ -25,7 +25,7 @@ namespace IwMetricsWorks.Api.Controllers.V1
 
             if (result.IsError) return HandleErrorResponse(result.Errors);
 
-            return Ok(_mapper.Map<IdentityUserProfile>(result.PayLoad));
+            return Ok(_mapper.Map<UserRegistrationResponse>(result.PayLoad));
         }
 
         [HttpPost]
@@ -38,7 +38,7 @@ namespace IwMetricsWorks.Api.Controllers.V1
 
             if (result.IsError) return HandleErrorResponse(result.Errors);
   
-            return Ok(_mapper.Map<IdentityUserProfile>(result.PayLoad));
+            return Ok(_mapper.Map<UserLoginResponse>(result.PayLoad));
         }
     }
 }

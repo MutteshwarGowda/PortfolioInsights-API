@@ -1,7 +1,4 @@
 ﻿
-using IwMetricsWorks.Api.Filters;
-using Microsoft.AspNetCore.Mvc.Versioning;
-
 namespace IwMetricsWorks.Api.Registrars
 {
     public class MvcRegistrar : IWebApplicationBuilderRegistrar

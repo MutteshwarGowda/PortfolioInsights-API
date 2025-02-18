@@ -1,15 +1,4 @@
-﻿using IwMetrics.Application.Models;
-using IwMetrics.Application.Portfolios.Queries;
-using IwMetrics.Infrastructure;
-using IwMetrics.Domain.Aggregates.PortfolioAssets;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace IwMetrics.Application.Portfolios.QueryHandler
 {
     public class GetAllPortfolioHandler : IRequestHandler<GetAllPortfolio, OperationResult<List<Portfolio>>>
@@ -27,8 +16,9 @@ namespace IwMetrics.Application.Portfolios.QueryHandler
 
             try
             {
-                var portfolios = await _ctx.Portfolios.Include(p => p.Assets).ToListAsync(cancellationToken);
+                var portfolios = await _ctx.Portfolios.Include(p => p.Assets).Include(p => p.UserProfile).ToListAsync(cancellationToken);
                 result.PayLoad = portfolios;
+                return result;
             }
             catch (Exception e)
             {

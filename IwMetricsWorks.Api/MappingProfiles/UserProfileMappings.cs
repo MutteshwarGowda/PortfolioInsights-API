@@ -1,7 +1,4 @@
 ﻿
-using IwMetrics.Domain.Aggregates.UserProfileAggregate;
-using IwMetricsWorks.Api.Contracts.UserProfile.Responses;
-
 namespace IwMetricsWorks.Api.MappingProfiles
 {
     public class UserProfileMappings : Profile
@@ -9,8 +6,15 @@ namespace IwMetricsWorks.Api.MappingProfiles
         public UserProfileMappings()
         {
             CreateMap<UserProfileUpdateRequest, UpdateUserProfileBasicInfo>();
-            CreateMap<UserProfile, UserProfileResponse>();
             CreateMap<BasicInfo, BasicInformation>();
+
+            CreateMap<UserProfile, UserProfileResponse>()
+                .ForMember(dest => dest.UserProfileId, opt => opt.MapFrom(src => src.UserProfileId))
+                .ForMember(dest => dest.BasicInfo, opt => opt.MapFrom(src => src.BasicInfo))
+                .ForMember(dest => dest.DateCreated, opt => opt.MapFrom(src => src.DateCreated))
+                .ForMember(dest => dest.LastModified, opt => opt.MapFrom(src => src.LastModified));
+               
+            
         }
     }
 }

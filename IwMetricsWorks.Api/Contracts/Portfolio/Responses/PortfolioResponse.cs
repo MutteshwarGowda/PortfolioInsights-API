@@ -8,7 +8,7 @@ namespace IwMetricsWorks.Api.Contracts.Portfolio.Responses
         public decimal TotalValue { get; set; }
         public Guid ManagerId { get; init; }
         public string? Manager { get; init; }
-        public RiskLevelResponse RiskLevel { get; init; }
+        public string RiskLevel { get; init; }
         public DateTime CreatedAt { get; init; }
         public DateTime? DateModified { get; init; }
         public List<AssetResponse> Assets { get; init; } 
