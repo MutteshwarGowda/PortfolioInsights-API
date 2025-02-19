@@ -361,3 +361,10 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Ignore appsettings.json files to prevent exposing secrets
+appsettings.json
+appsettings.Development.json
+
+# Ignore EF Core migrations
+Migrations/

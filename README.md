@@ -4,11 +4,11 @@ A .NET Core Web API that allows users to manage investment portfolios and share 
 
 
 ## Features
- # User authentication (JWT-based)  
- # Role-based authorization (User, Manager, Admin)  
- # Portfolio and Asset Management  
- # Secure API endpoints with MediatR and CQRS  
- # Clean Architecture and .NET Core Web API  
+ ## User authentication (JWT-based)  
+ ## Role-based authorization (User, Manager, Admin)  
+ ## Portfolio and Asset Management  
+ ## Secure API endpoints with MediatR and CQRS  
+ ## Clean Architecture and .NET Core Web API  
 
 
 ## Tech Stack
