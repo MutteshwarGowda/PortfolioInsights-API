@@ -1,6 +1,4 @@
 ﻿
-using IwMetrics.Domain.Aggregates.PortfolioAssets;
-
 namespace IwMetrics.Application.Assets.CommandHandler
 {
     public class UpdateAssetHandler : IRequestHandler<UpdateAssetCommand, OperationResult<Asset>>
@@ -29,6 +27,12 @@ namespace IwMetrics.Application.Assets.CommandHandler
                 if (asset.PortfolioId != request.PortfolioId)
                 {
                     result.AddError(ErrorCode.ValidationError, PortfolioErrorMessage.PortfolioUpdateNotPossible);
+                    return result;
+                }
+
+                if (asset.Portfolio.UserProfileId != request.ManagerId)
+                {
+                    result.AddError(ErrorCode.ValidationError, PortfolioErrorMessage.ManagerUnmatched);
                     return result;
                 }
 

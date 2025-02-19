@@ -35,6 +35,12 @@ namespace IwMetrics.Application.Portfolios.CommandHandler
                     return result;
                 }
 
+                if (portfolio.UserProfileId != request.ManagerId)
+                {
+                    result.AddError(ErrorCode.ValidationError, PortfolioErrorMessage.ManagerUnmatched);
+                    return result;
+                }
+
                 portfolio.UpdatePortfolio(request.Name, request.RiskLevel, userProfile);
 
                 await _ctx.SaveChangesAsync(cancellationToken);

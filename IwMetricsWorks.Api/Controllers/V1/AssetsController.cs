@@ -69,6 +69,7 @@ namespace IwMetricsWorks.Api.Controllers.V1
         public async Task<IActionResult> UpdateAsset(Guid assetId, [FromBody] UpdateAssetRequest updateAsset)
         {
             var type = _mapper.Map<AssetType>(updateAsset.Type);
+            var userProfileId = HttpContext.GetUserProfileIdClaimValue();
 
             var command = new UpdateAssetCommand
             {
@@ -76,7 +77,8 @@ namespace IwMetricsWorks.Api.Controllers.V1
                 Type = type,
                 Value = updateAsset.Value,
                 Name = updateAsset.Name,
-                PortfolioId = updateAsset.PortfolioId
+                PortfolioId = updateAsset.PortfolioId,
+                ManagerId = userProfileId
             };
 
             var result = await _mediator.Send(command);
