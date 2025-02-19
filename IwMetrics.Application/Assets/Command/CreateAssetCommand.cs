@@ -7,5 +7,6 @@ namespace IwMetrics.Application.Assets.Command
         public decimal Value { get; set; }
         public AssetType Type { get; set; }
         public Guid PortfolioId { get; set; }
+        public Guid? ManagerId { get; set; }
     }
 }

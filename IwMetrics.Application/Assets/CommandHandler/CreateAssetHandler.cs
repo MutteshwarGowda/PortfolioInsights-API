@@ -24,6 +24,12 @@ namespace IwMetrics.Application.Assets.CommandHandler
                     return result;
                 }
 
+                if (portfolio.UserProfileId != request.ManagerId)
+                {
+                    result.AddError(ErrorCode.ValidationError, PortfolioErrorMessage.ManagerUnmatched);
+                    return result;
+                }
+
                 var asset = Asset.CreateAsset(request.Name, request.Value, request.Type, request.PortfolioId);
                 
                 portfolio.AddAsset(asset);

@@ -46,6 +46,7 @@ namespace IwMetricsWorks.Api.Controllers.V1
         public async Task<IActionResult> CreateAsset([FromBody] CreateAssetRequest createAsset)
         {
             var type = _mapper.Map<AssetType>(createAsset.Type);
+            var userProfileId = HttpContext.GetUserProfileIdClaimValue();
 
             var command = new CreateAssetCommand
             {
@@ -53,6 +54,7 @@ namespace IwMetricsWorks.Api.Controllers.V1
                 Name = createAsset.Name,
                 Type = type,
                 Value = createAsset.Value,
+                ManagerId = userProfileId
             };
 
             var result = await _mediator.Send(command);
