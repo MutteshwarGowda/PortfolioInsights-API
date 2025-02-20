@@ -1,4 +1,4 @@
-# Investment Metrics - Portfolio Insights
+# IwMetrics - Portfolio Insights
 
 A .NET Core Web API that allows users to manage investment portfolios and share insights with others.
 
